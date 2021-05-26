@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "PPI.h"
-char * ifs=" \t\n";
 
 int main() {
 
