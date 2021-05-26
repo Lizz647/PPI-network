@@ -34,7 +34,7 @@ struct Net create_net(FILE * fp){
 
     char line[100];
     int count=0;
-    extern char * ifs;
+    char * ifs = " \t\n"; \\设定读取文件时的分隔符
 
     net.PPI = (int **)malloc(sizeof(int *)*(count+1));
     net.PPI[0] = (int *)malloc(sizeof(int)*(count+1));
