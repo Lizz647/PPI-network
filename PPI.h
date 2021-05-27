@@ -27,6 +27,8 @@ struct Net{
     int number;
 };
 
+//for qsort (sort the protein to optimize the find
+int cmp (const void *a, const void *b);
 // get_data函数用于将文件每行内容存储到一个Data结构体中：
 struct Data get_data(char *line, char *ifs);
 //is_exist函数用于判断新读到的蛋白是否与之前重复

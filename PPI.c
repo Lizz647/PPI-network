@@ -4,6 +4,11 @@
 // ****************************** 从string文件中提取数据 ***************************************
 // ******************************************************************************************
 
+//for qsort (sort the protein to optimize the find
+int cmp (const void *a, const void *b){
+    return strcmp(*(char **)a, *(char **)b);
+}
+
 // get_data函数用于将文件每行内容存储到一个Data结构体中：
 struct Data get_data(char *line, char *ifs){
     struct Data curdata;
@@ -101,9 +106,11 @@ struct Net create_net(FILE * fp){
         net.PPI[num_protein1][num_protein2]=data.score;
         net.PPI[num_protein2][num_protein1]=data.score;
         strcpy(net.protein[num_protein2],data.name2);
+
     }
 
     net.number=count;
+    qsort(net.protein, net.number, sizeof(net.protein[0]), cmp);
     return net;
 }
 // ******************************************************************************************
@@ -334,7 +341,7 @@ void Dijkstra(struct Net G, int vs)
 
     // 打印dijkstra最短路径的结果
     // 打印最段路径线路
-    printf("dijkstra(%s): \n", G.protein[vs]);
+    printf("algorithms(%s): \n", G.protein[vs]);
     for (i = 0; i < G.number; i++) {
         printf("  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[i], dist[i]);
         printf("  path(%s,%s):\n", G.protein[vs], G.protein[i]);
