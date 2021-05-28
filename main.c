@@ -1,30 +1,68 @@
 #include <stdio.h>
 #include "PPI.h"
+// char * ifs=" \t\n";
 
-// 示例程序
+int main(int argc, char ** argv) {
+    //输入错误时usage：
+    if(argc<=2){ printf("usage: ./PPI [options] [filename]\n");return -1;}
 
-int main() {
-    // 打开string文件
-    char path[] = "/home/lizz02/miniversion.txt";
+    char *path = argv[argc-1];
     FILE * fp;
     fp = fopen(path,"r");
     struct Net net;
-    //获得网络
     net = create_net(fp);
 
-    /*  输出获得的蛋白质网络
-    for(i=0;i<net.number;i++)
-        for(j=0;j<net.number;j++)
-            if(net.PPI[i][j]!=-1)
-                printf("%s %s %d\n",net.protein[i],net.protein[j],net.PPI[i][j]);
-    */
+    int opt;
+    int option_index=0;
+    //-F -D=[protein] -S=[protein]
+    char * string="FD::S::";
 
-    // 找最短路径并输出结果 因为后三种算法为单源最短路径 需要传入第二个参数说明源点 此处取0
-    Floyd(net);    //这里为了不输出太多 只输出了点0到其他点的距离
-    //Dijkstra(net,1);     //成了!!
-    //Bellman_ford(net,35);      //成了!!
-    //SPFA(net,5);      //成了!
+    static struct option long_options[] = {
+            {"Floyd",no_argument, NULL, 'F'},
+            {"Dijkstra",optional_argument, NULL, 'D' },
+            {"SPFA",optional_argument, NULL, 'S'},
+    };
 
+    while((opt=getopt_long(argc, argv, string, long_options, &option_index))!=-1){
+        //-F或--Floyd 不带参数，输出ALL-PAIR
+        if(opt == 'F') {
+            printf("Floyd\nThis is the shortest path for all-pair:\n\n");
+            Floyd(net);
+        }
+        //-D或--Dijkstra 可选参数，默认输出第一个蛋白的（首先查找输入的蛋白）
+        else if(opt == 'D'){
+            if(optarg == NULL || optind == argc-1){
+                printf("Dijkstra\nThis is the shortest path for %s\n\n",net.protein[0]);
+                Dijkstra(net,0);
+            }
+            else{
+                int vs;
+                vs = binary_search(optarg,net.protein,net.number);
+                if(vs==-1) {printf("Protein Not Found!\n"); continue;}
+                else {
+                    printf("Dijkstra\n This is the shortest path for %s\n\n",optarg);
+                    Dijkstra(net,vs);
+                }
+            }
+        }
+        //-S或--SPFA 可选参数，默认输出第一个蛋白的（首先查找输入的蛋白）
+        else if(opt == 'S'){
+            if(optarg == NULL || optind == argc-1){
+                printf("SPFA\nThis is the shortest path for %s\n\n",net.protein[0]);
+                SPFA(net,0);
+            }
+            else{
+                int vs;
+                vs = binary_search(optarg,net.protein,net.number);
+                if(vs==-1) {printf("Protein Not Found!\n"); continue;}
+                else {
+                    printf("SPFA\n This is the shortest path for %s\n\n",optarg);
+                    SPFA(net,vs);
+                }
+            }
+        }
+        if(optind==argc){break;}
+    }
     return 0;
 }
 
