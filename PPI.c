@@ -225,7 +225,7 @@ void Floyd(struct Net G) {
     for(i=0;i<G.number;i++){
         for(j=0;j<G.number;j++){
             if(i==j) path[i][j] = -1;
-            else path[i][j] = 0;
+            else path[i][j] = i;
         }
     }
 
@@ -243,7 +243,7 @@ void Floyd(struct Net G) {
 
     /*做检验
     for (j = 0; j < G.number; j++) {
-        printf("path[0][%d]:%d ",j,path[0][j]);
+        printf("path[1][%d]:%d ",j,path[0][j]);
         if(j%6==0) printf("\n");
     }
     printf("\n");
@@ -286,7 +286,7 @@ void Dijkstra(struct Net G, int vs)
     for (i = 0; i < G.number; i++)
     {
         flag[i] = 0;              // 顶点i的最短路径还没获取到。
-        prev[i] = 0;              // 顶点i的前驱顶点为-1。
+        prev[i] = vs;              // 顶点i的前驱顶点为-1。
         dist[i] = G.PPI[vs][i];// 顶点i的最短路径为"顶点vs"到"顶点i"的权。
     }
 
@@ -371,7 +371,7 @@ void Bellman_ford(struct Net G, int vs) {
     //初始化
     for (i = 0; i < G.number; i++) {
         dist[i] = G.PPI[vs][i];
-        prev[i] = 0;
+        prev[i] = vs;
     }
     prev[vs] = -1;
 
@@ -437,7 +437,7 @@ void SPFA(struct Net G, int vs) {
     //初始化
     for (i = 0; i < G.number; i++) {
         dist[i] = INF;
-        prev[i] = 0;
+        prev[i] = vs;
         flag[i] = 0;
     }
     dist[vs] = 0;
