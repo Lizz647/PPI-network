@@ -16,7 +16,7 @@ struct Data get_data(char *line, char *ifs){
     curdata.name2 = strtok(NULL, ifs);
     char * score = strtok(NULL, ifs);
     curdata.score = 0; int i;
-    for(i=0; score[i]!='\0';i++){
+    for(i=0; score[i+1]!='\0';i++){
         curdata.score *=10;
         curdata.score += score[i]-'0';
     }
