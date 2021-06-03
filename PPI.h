@@ -1,7 +1,3 @@
-//
-// Created by admin on 2021/5/25.
-//
-
 #ifndef MYPPI_PPI_H
 #define MYPPI_PPI_H
 #include <stdio.h>
@@ -9,6 +5,15 @@
 #include <string.h>
 //*********INFinite*********//
 #define INF 1000000000
+
+// *******************************  链式前向星  ***********************************************
+typedef struct{
+    int *next, *weight,*to ,*head;
+    int k; //计数变量
+    int Edgenum,Vernum;
+    char **protein;
+}starNet;
+// *******************************  链式前向星  ***********************************************
 
 // ****************************** 从string文件中提取数据 ***************************************
 // ******************************************************************************************
@@ -33,7 +38,13 @@ int cmp (const void *a, const void *b);
 struct Data get_data(char *line, char *ifs);
 //is_exist函数用于判断新读到的蛋白是否与之前重复
 int is_exist(char * name, char ** protein, int count);
+int is_exist_binary(char * name, char ** protein, int count);
+
+// 宋歌写的二分查找
+int binary_search(char * name, char ** protein, int count);
+
 struct Net create_net(FILE * fp);
+starNet create_starnet(FILE * fp);
 
 // ******************************************************************************************
 // ****************************** 从string文件中提取数据 ***************************************
@@ -82,17 +93,20 @@ void Floyd(struct Net G);
 void Dijkstra(struct Net G, int vs);
 void Bellman_ford(struct Net G, int vs);
 void SPFA(struct Net G, int vs);
-// void dijkstraWithBinaryHeap(struct Net G,int vs)  二叉堆优化的dijkstra 还未实现
+void dij_heap(starNet G,int vs);  //二叉堆优化的dijkstra 还未实现
+void star_SPFA(starNet G, int vs);
 
 // 帮助显示具体路径的函数
 void show_path(struct Net G, int vs, int i, int prev[]);
+void show_path_star(starNet G, int vs, int i, int prev[]);
 
 // *******************************************************************************************
 // ******************************** 算法与输出的实现 ********************************************
 
 
+// *******************************************************************************************
+// *******************************  最小二叉堆数据结构 ******************************************
 
-/* ***************************  以上是最小二叉堆数据结构 还没实现 先注释掉 **************************
 typedef struct heapNode{
     int key;
     int i;
@@ -104,9 +118,10 @@ typedef struct minHeap{
     int maxSize;
 }HEAP;
 
+
 int initHeapNode(HEAPNODE *a,int value_key,int value_i);
 
-int initHeap(HEAP* heap);
+int initHeap(HEAP* heap, starNet *G);
 
 void delHeap(HEAP* heap);
 
@@ -122,7 +137,8 @@ HEAPNODE deQueueHeap(HEAP* heap);
 
 int buildHeap(HEAP* heap, struct Net G, int vs);
 
-******************** 以上是最小二叉堆数据结构 还没实现 先注释掉 ***********************     */
-
+// *******************************  最小二叉堆数据结构 ******************************************
+// *******************************************************************************************
 
 #endif //MYPPI_PPI_H
+
