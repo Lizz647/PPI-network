@@ -240,6 +240,105 @@ void Dijkstra(struct Net G, int vs)
     free(flag);
 }
 
+int Dijkstra_end(struct Net G, char *p)
+{
+    int len;
+    char p1[20], p2[20];
+    for(len=0; p[len]!='\0';len++) {
+        if (p[len] == '/') break;
+    }
+    strncpy(p1, p, len);
+    p1[len]='\0';
+    int len2 = (int)strlen(p)-len;
+    strncpy(p2, &p[len+1], len2);
+    int vs = search(p1, G.protein, G.number);
+    int end = search(p2, G.protein, G.number);
+
+    if(vs == -1) {
+        printf("%s not found!\n",p1);
+        return -1;
+    }
+    if(end == -1){
+        printf("%s not found!\n",p2);
+        return -2;
+    }
+    int i,j,k;
+    int min;
+    int tmp;
+    int* dist = (int*) malloc(sizeof(int)*G.number);
+    int* prev = (int*) malloc(sizeof(int)*G.number);
+    int* flag =(int*)malloc(sizeof(int)*G.number);      // flag[i]=1表示"顶点vs"到"顶点i"的最短路径已成功获取。
+
+    // 初始化
+    for (i = 0; i < G.number; i++)
+    {
+        flag[i] = 0;              // 顶点i的最短路径还没获取到。
+        prev[i] = vs;              // 顶点i的前驱顶点为-1。
+        dist[i] = G.PPI[vs][i];// 顶点i的最短路径为"顶点vs"到"顶点i"的权。
+    }
+
+    // 对"顶点vs"自身进行初始化
+    flag[vs] = 1;
+    dist[vs] = 0;
+    prev[vs] = -1;
+
+    // 遍历G.vexnum-1次；每次找出一个顶点的最短路径。
+    for (i = 1; i < G.number; i++)
+    {
+        // 寻找当前最小的路径；
+        // 即，在未获取最短路径的顶点中，找到离vs最近的顶点(k)。
+        min = INF;
+        for (j = 0; j < G.number; j++)
+        {
+            if (flag[j]==0 && dist[j]<min)
+            {
+                min = dist[j];
+                k = j;
+            }
+        }
+        // 标记"顶点k"为已经获取到最短路径
+        flag[k] = 1;
+
+        // 修正当前最短路径和前驱顶点
+        // 即，当已经"顶点k的最短路径"之后，更新"未获取最短路径的顶点的最短路径和前驱顶点"。
+        for (j = 0; j < G.number; j++)
+        {
+            tmp = (G.PPI[k][j]==INF ? INF : (min + G.PPI[k][j])); // 防止溢出
+            if (flag[j] == 0 && (tmp  < dist[j]) )
+            {
+                dist[j] = tmp;
+                prev[j] = k;
+            }
+        }
+        if(flag[end]) break;
+    }
+
+    /*做检验
+    for (j = 0; j < G.number; j++) {
+        printf("dist[%d]:%d ",j,dist[j]);
+        if(j%6==0) printf("\n");
+    }
+    printf("\n\n");
+    for (j = 0; j < G.number; j++) {
+        printf("prev[%d]:%d ",j,prev[j]);
+        if(j%6==0) printf("\n");
+    }
+    printf("\n");
+     */
+
+    // 打印dijkstra最短路径的结果
+    // 打印最段路径线路
+    printf("algorithms(%s): \n", G.protein[vs]);
+    printf("  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[end], dist[end]);
+    printf("  path(%s,%s):\n", G.protein[vs], G.protein[end]);
+    show_path(G, vs, end, prev);
+    // 释放空间
+    free(dist);
+    free(prev);
+    free(flag);
+    return 0;
+}
+
 //从prev[]数组中获得具体路径
 void show_path(struct Net G, int vs, int i, int prev[]){
     if (prev[i] == -1) printf("  This is me!!\n");
@@ -382,5 +481,19 @@ void SPFA(struct Net G, int vs) {
     free(flag);
 }
 
+//show_path star_net版本
+void show_path_star(starNet G, int vs, int i, int prev[]){
+    if (prev[i] == -1) printf("  This is me!!\n");
+    else if(prev[i] == vs) printf("  %s -> %s ",G.protein[vs],G.protein[i]);
+    else {
+        show_path_star(G, vs, prev[i], prev);
+        printf("-> %s ",G.protein[i]);
+    }
+}
 // *******************************************************************************************
 // ******************************** 算法与输出的实现 ********************************************
+
+
+
+
+

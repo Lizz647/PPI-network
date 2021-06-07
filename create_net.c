@@ -16,7 +16,7 @@ struct Data get_data(char *line, char *ifs){
     curdata.name2 = strtok(NULL, ifs);
     char * score = strtok(NULL, ifs);
     curdata.score = 0; int i;
-    for(i=0; score[i+1]!='\0';i++){
+    for(i=0; score[i] >= '0' && score[i] <= '9' ;i++){
         curdata.score *=10;
         curdata.score += score[i]-'0';
     }
@@ -30,6 +30,26 @@ int is_exist(char * name, char ** protein, int count){
         if(strcmp(name, protein[i])==0) break;
     }
     if(i==count) return -1;
+    else return i;
+}
+
+//is_exist的二分版本
+int is_exist_binary(char * name, char ** protein, int count){
+    int i,right=count-1,left=0,mid=(right+left)/2, flag=0;
+    i = mid;
+    while(left<=right){
+        if(strcmp(name, protein[i])==0) {flag=1;break;}
+        else if(strcmp(name, protein[i])>0){
+            left = mid + 1;
+            mid = ( left + right )/2;
+        }
+        else {
+            right = mid - 1;
+            mid = ( left + right )/2;
+        }
+        i = mid;
+    }
+    if(flag == 0) return -1;
     else return i;
 }
 
@@ -110,7 +130,6 @@ struct Net create_net(FILE * fp){
     }
 
     net.number=count;
-    qsort(net.protein, net.number, sizeof(net.protein[0]), cmp);
     return net;
 }
 // ******************************************************************************************

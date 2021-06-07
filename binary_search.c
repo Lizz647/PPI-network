@@ -14,3 +14,10 @@ int binary_search(char * name, char ** protein, int count){
     return -1;
 }
 
+int search(char * name,char ** protein, int count){
+    int i;
+    for(i=0;i<count;i++){
+        if(strcmp(protein[i],name)==0) return i;
+    }
+    return -1;
+}
