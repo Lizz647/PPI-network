@@ -1,12 +1,10 @@
 # PPI-network
 
-[toc]
 
 **Welcome! Here we aim to design a C library to help find all-pairs shortest path in PPI-network.** 
 
 **Now version 1.0 are released, come and enjoy our project!**
 
-![488B8486C426324E1802BE26BC85D1FC](/home/lizz02/final/488B8486C426324E1802BE26BC85D1FC.jpg)
 
 -----------------
 
