@@ -3,7 +3,7 @@
 
 **Welcome! Here we aim to design a C library to help find all-pairs shortest path in PPI-network.** 
 
-**Now version 1.0 are released, come and enjoy our project!**
+**Now version 1.1 are released, come and enjoy our project!**
 
 
 -----------------
