@@ -182,6 +182,8 @@ starNet create_starnet(FILE * fp){
 // ********************************* Dij_heap ******************************************
 
 void dij_heap(starNet G,int vs) {
+    FILE * fp;
+    fp = fopen("dij_heap.txt","w+");
     int i;
     int* dist = (int*) malloc(sizeof(int)*G.Vernum);
     int* prev = (int*) malloc(sizeof(int)*G.Vernum);
@@ -227,17 +229,18 @@ void dij_heap(starNet G,int vs) {
     printf("\n\n");
     */
 
-    printf("algorithms(%s): \n", G.protein[vs]);
+    fprintf(fp, "algorithms(%s): \n", G.protein[vs]);
     for (i = 0; i < G.Vernum; i++) {
-        printf("  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[i], dist[i]);
-        printf("  path(%s,%s):\n", G.protein[vs], G.protein[i]);
-        show_path_star(G, vs, i, prev);
-        printf("\n");
+        fprintf(fp,"  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[i], dist[i]);
+        fprintf(fp,"  path(%s,%s):\n", G.protein[vs], G.protein[i]);
+        show_path_star(G, vs, i, prev, fp);
+        fprintf(fp,"\n");
     }
     // 释放空间
     free(dist);
     free(prev);
     delHeap(dijheap);
+    fclose(fp);
 }
 
 // ********************************* Dij_heap ******************************************
@@ -246,6 +249,8 @@ void dij_heap(starNet G,int vs) {
 
 
 void star_SPFA(starNet G, int vs) {
+    FILE *fp;
+    fp = fopen("star_SPFA.txt","w+");
     int i,tmp;
     int* dist = (int*) malloc(sizeof(int)*G.Vernum);
     int* prev = (int*) malloc(sizeof(int)*G.Vernum);
@@ -283,18 +288,19 @@ void star_SPFA(starNet G, int vs) {
     }
 
     // 输出结果
-    printf("starSPFA(%s): \n", G.protein[vs]);
+    fprintf(fp,"starSPFA(%s): \n", G.protein[vs]);
     for (i = 0; i < G.Vernum; i++) {
-        printf("  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[i], dist[i]);
-        printf("  path(%s,%s):\n", G.protein[vs], G.protein[i]);
-        show_path_star(G, vs, i, prev);
-        printf("\n");
+        fprintf(fp,"  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[i], dist[i]);
+        fprintf(fp,"  path(%s,%s):\n", G.protein[vs], G.protein[i]);
+        show_path_star(G, vs, i, prev,fp);
+        fprintf(fp,"\n");
     }
 
     //释放空间
     free(dist);
     free(prev);
     free(flag);
+    fclose(fp);
 }
 // ********************************* star_SPFA ******************************************
 

@@ -102,6 +102,8 @@ int isEmptyQueue(QUEUE InQueue)
 // *******************************************************************************************
 
 void Floyd(struct Net G) {
+    FILE *fp;
+    fp = fopen("Floyd.txt","w+");
     int i,j,k,tmp;
     int **path = (int**) malloc(sizeof(int*)*G.number);
     for(i=0;i<G.number;i++) path[i] = (int*) malloc(sizeof(int)*G.number);
@@ -138,16 +140,17 @@ void Floyd(struct Net G) {
     int vs;
     for(vs=0; vs<G.number ; vs++){
         for (j = 0; j < G.number; j++) {
-            printf("  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[j], G.PPI[vs][j]);
-            printf("  path(%s,%s):\n", G.protein[vs], G.protein[j]);
-            show_path(G, vs, j, path[vs]);
-            printf("\n\n");
+            fprintf(fp,"  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[j], G.PPI[vs][j]);
+            fprintf(fp,"  path(%s,%s):\n", G.protein[vs], G.protein[j]);
+            show_path(G, vs, j, path[vs],fp);
+            fprintf(fp,"\n\n");
         }
     }
 
     // 释放空间
     for(i=0;i<G.number;i++) free(path[i]);
     free(path);
+    fclose(fp);
 }
 
 /*
@@ -162,6 +165,8 @@ void Floyd(struct Net G) {
  */
 void Dijkstra(struct Net G, int vs)
 {
+    FILE * fp;
+    fp = fopen("Dijkstra.txt","w+");
     int i,j,k;
     int min;
     int tmp;
@@ -229,19 +234,22 @@ void Dijkstra(struct Net G, int vs)
     // 打印最段路径线路
     printf("algorithms(%s): \n", G.protein[vs]);
     for (i = 0; i < G.number; i++) {
-        printf("  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[i], dist[i]);
-        printf("  path(%s,%s):\n", G.protein[vs], G.protein[i]);
-        show_path(G, vs, i, prev);
-        printf("\n");
+        fprintf(fp,"  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[i], dist[i]);
+        fprintf(fp,"  path(%s,%s):\n", G.protein[vs], G.protein[i]);
+        show_path(G, vs, i, prev,fp);
+        fprintf(fp,"\n");
     }
     // 释放空间
     free(dist);
     free(prev);
     free(flag);
+    fclose(fp);
 }
 
 int Dijkstra_end(struct Net G, char *p)
 {
+    FILE * fp;
+    fp = fopen("Dijkstra_end.txt","w+");
     int len;
     char p1[20], p2[20];
     for(len=0; p[len]!='\0';len++) {
@@ -328,28 +336,31 @@ int Dijkstra_end(struct Net G, char *p)
 
     // 打印dijkstra最短路径的结果
     // 打印最段路径线路
-    printf("algorithms(%s): \n", G.protein[vs]);
-    printf("  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[end], dist[end]);
-    printf("  path(%s,%s):\n", G.protein[vs], G.protein[end]);
-    show_path(G, vs, end, prev);
+    fprintf(fp,"algorithms(%s): \n", G.protein[vs]);
+    fprintf(fp,"  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[end], dist[end]);
+    fprintf(fp,"  path(%s,%s):\n", G.protein[vs], G.protein[end]);
+    show_path(G, vs, end, prev,fp);
     // 释放空间
     free(dist);
     free(prev);
     free(flag);
+    fclose(fp);
     return 0;
 }
 
 //从prev[]数组中获得具体路径
-void show_path(struct Net G, int vs, int i, int prev[]){
-    if (prev[i] == -1) printf("  This is me!!\n");
-    else if(prev[i] == vs) printf("  %s -> %s ",G.protein[vs],G.protein[i]);
+void show_path(struct Net G, int vs, int i, int prev[], FILE * fp){
+    if (prev[i] == -1) fprintf(fp,"  This is me!!\n");
+    else if(prev[i] == vs) fprintf(fp,"  %s -> %s ",G.protein[vs],G.protein[i]);
     else {
-        show_path(G, vs, prev[i], prev);
-        printf("-> %s ",G.protein[i]);
+        show_path(G, vs, prev[i], prev, fp);
+        fprintf(fp,"-> %s ",G.protein[i]);
     }
 }
 
 void Bellman_ford(struct Net G, int vs) {
+    FILE *fp;
+    fp = fopen("Bellman_ford.txt","w+");
     int i,j,k,tmp;
     int* dist = (int*) malloc(sizeof(int)*G.number);
     int* prev = (int*) malloc(sizeof(int)*G.number);
@@ -401,19 +412,22 @@ void Bellman_ford(struct Net G, int vs) {
     */
 
     // 输出结果
-    printf("Bellman-ford(%s): \n", G.protein[vs]);
+    fprintf(fp,"Bellman-ford(%s): \n", G.protein[vs]);
     for (i = 0; i < G.number; i++) {
-        printf("  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[i], dist[i]);
-        printf("  path(%s,%s):\n", G.protein[vs], G.protein[i]);
-        show_path(G, vs, i, prev);
+        fprintf(fp,"  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[i], dist[i]);
+        fprintf(fp,"  path(%s,%s):\n", G.protein[vs], G.protein[i]);
+        show_path(G, vs, i, prev,fp);
         printf("\n");
     }
     // 释放空间
     free(dist);
     free(prev);
+    fclose(fp);
 }
 
 void SPFA(struct Net G, int vs) {
+    FILE * fp;
+    fp = fopen("SPFA.txt","w+");
     int i,j,k,tmp;
     int* dist = (int*) malloc(sizeof(int)*G.number);
     int* prev = (int*) malloc(sizeof(int)*G.number);
@@ -467,27 +481,28 @@ void SPFA(struct Net G, int vs) {
     */
 
     // 输出结果
-    printf("SPFA(%s): \n", G.protein[vs]);
+    fprintf(fp,"SPFA(%s): \n", G.protein[vs]);
     for (i = 0; i < G.number; i++) {
-        printf("  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[i], dist[i]);
-        printf("  path(%s,%s):\n", G.protein[vs], G.protein[i]);
-        show_path(G, vs, i, prev);
-        printf("\n");
+        fprintf(fp,"  shortest(%s, %s)=%d\n", G.protein[vs], G.protein[i], dist[i]);
+        fprintf(fp,"  path(%s,%s):\n", G.protein[vs], G.protein[i]);
+        show_path(G, vs, i, prev,fp);
+        fprintf(fp,"\n");
     }
 
     //释放空间
     free(dist);
     free(prev);
     free(flag);
+    fclose(fp);
 }
 
 //show_path star_net版本
-void show_path_star(starNet G, int vs, int i, int prev[]){
-    if (prev[i] == -1) printf("  This is me!!\n");
-    else if(prev[i] == vs) printf("  %s -> %s ",G.protein[vs],G.protein[i]);
+void show_path_star(starNet G, int vs, int i, int prev[], FILE *fp){
+    if (prev[i] == -1) fprintf(fp, "  This is me!!\n");
+    else if(prev[i] == vs) fprintf(fp,"  %s -> %s ",G.protein[vs],G.protein[i]);
     else {
-        show_path_star(G, vs, prev[i], prev);
-        printf("-> %s ",G.protein[i]);
+        show_path_star(G, vs, prev[i], prev,fp);
+        fprintf(fp,"-> %s ",G.protein[i]);
     }
 }
 // *******************************************************************************************
