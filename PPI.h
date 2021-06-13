@@ -100,8 +100,8 @@ void dij_heap(starNet G,int vs);  //二叉堆优化的dijkstra 还未实现
 void star_SPFA(starNet G, int vs);
 
 // 帮助显示具体路径的函数
-void show_path(struct Net G, int vs, int i, int prev[]);
-void show_path_star(starNet G, int vs, int i, int prev[]);
+void show_path(struct Net G, int vs, int i, int prev[], FILE* fp);
+void show_path_star(starNet G, int vs, int i, int prev[], FILE* fp);
 
 // *******************************************************************************************
 // ******************************** 算法与输出的实现 ********************************************
